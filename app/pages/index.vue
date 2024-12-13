@@ -28,6 +28,41 @@ useSeoMeta({
   ogImage: `${url.origin}/og.png`,
   twitterImage: `${url.origin}/og.png`,
 })
+
+let toggleThemeMode = (event: MouseEvent) => {
+  if (!document.startViewTransition) {
+    toggleThemeMode = () => {
+      colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+    }
+  } else {
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+    const transition = document.startViewTransition(() => {
+      colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+    });
+  
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+      document.documentElement.animate(
+        {
+          clipPath: colorMode.value === 'dark' ? clipPath : clipPath.reverse(),
+        },
+        {
+          duration: 300,
+          easing: "ease-in",
+          pseudoElement: colorMode.value === 'dark' ? "::view-transition-new(root)" : "::view-transition-old(root)",
+        }
+      );
+    });
+  }
+}
 </script>
 
 <template>
@@ -57,7 +92,7 @@ useSeoMeta({
             :icon="colorMode.value === 'dark' ? 'i-ph-moon-stars-duotone' : 'i-ph-sun-duotone'"
             color="gray"
             variant="link"
-            @click="colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'"
+            @click="toggleThemeMode($event)"
           />
           <template #fallback>
             <div class="w-8 h-8" />
@@ -90,3 +125,35 @@ useSeoMeta({
     </div>
   </UContainer>
 </template>
+
+<style>
+@layer view-transitions {
+  @layer no-root {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal
+    }
+  }
+
+  @layer light {
+    html.light::view-transition-old(root) {
+      z-index: 999
+    }
+
+    html.light::view-transition-new(root) {
+      z-index: 1
+    }
+  }
+
+  @layer dark {
+    html.dark::view-transition-old(root) {
+      z-index: 1
+    }
+
+    html.dark::view-transition-new(root) {
+      z-index: 999
+    }
+  }
+}
+</style>
