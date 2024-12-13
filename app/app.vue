@@ -20,6 +20,7 @@ useHead({
     </UButton>
   </p>
   <ScrollToTop />
+  <ArtPlum />
 </template>
 
 <style lang="postcss">
