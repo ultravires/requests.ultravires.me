@@ -83,10 +83,12 @@ Server-side caching for `defineCachedEventHandler` / `defineCachedFunction` is b
 Build and deploy in one step:
 
 ```bash
-pnpm deploy
+pnpm deploy:cf
 ```
 
 That runs `nuxi build` (which emits `dist/_worker.js` via Nitro's `cloudflare-pages` preset) and `wrangler pages deploy dist`.
+
+> Note: the script is named `deploy:cf` (not `deploy`) because `pnpm deploy` is a built-in monorepo command that would otherwise shadow ours.
 
 ### Preview the production bundle locally
 

@@ -10,7 +10,7 @@ pages_build_output_dir = "./dist"
 # Then paste the returned `id` (and optional `preview_id`) below.
 [[kv_namespaces]]
 binding = "CACHE"
-id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+id = "2a269118c8b4446a95e680ab357db070"
 # preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_NAMESPACE_ID"
 
 # Server-side env vars. Don't store the real token here -- set it via the
