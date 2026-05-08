@@ -1,0 +1,20 @@
+name = "requests-ultravires-me"
+compatibility_date = "2024-10-17"
+pages_build_output_dir = "./dist"
+
+# KV namespace used by Nitro's `storage.cache` mount (see nuxt.config.ts).
+# Backs `defineCachedEventHandler` / `defineCachedFunction` calls in production.
+#
+# Create the namespace once with:
+#   pnpm dlx wrangler kv namespace create CACHE
+# Then paste the returned `id` (and optional `preview_id`) below.
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+# preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_NAMESPACE_ID"
+
+# Server-side env vars. Don't store the real token here -- set it via the
+# Cloudflare dashboard or:
+#   pnpm dlx wrangler pages secret put NUXT_GITHUB_TOKEN --project-name requests-ultravires-me
+# [vars]
+# NUXT_GITHUB_TOKEN = ""

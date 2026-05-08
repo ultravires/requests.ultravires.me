@@ -6,14 +6,14 @@ Create a website with an RSS feed of your recent GitHub pull requests across the
 
 Demo: https://prs.atinux.com
 
-[![Deploy to NuxtHub](https://hub.nuxt.com/button.svg)](https://hub.nuxt.com/new?template=my-pull-requests)
+> NuxtHub Admin was sunset on December 31st, 2025. This fork deploys directly to Cloudflare Pages via Wrangler — see the [Deploy](#deploy) section below.
 
 ## Features
 
 - List the 50 most recent pull requests you've contributed to.
 - RSS feed
 - Only add your GitHub token to get started
-- One click deploy on 275+ locations for free
+- Deployable to Cloudflare's global edge network for free
 
 ## Setup
 
@@ -53,15 +53,58 @@ pnpm build
 
 ## Deploy
 
-Deploy the application on the Edge with [NuxtHub](https://hub.nuxt.com) on your Cloudflare account:
+The project deploys to **Cloudflare Pages** using [Wrangler](https://developers.cloudflare.com/workers/wrangler/).
+Server-side caching for `defineCachedEventHandler` / `defineCachedFunction` is backed by a Cloudflare **KV** namespace bound as `CACHE` (configured in `nuxt.config.ts` via `nitro.storage.cache`).
+
+### One-time setup
+
+1. Authenticate Wrangler with your Cloudflare account:
+
+   ```bash
+   pnpm dlx wrangler login
+   ```
+
+2. Create the KV namespace used by the cache:
+
+   ```bash
+   pnpm dlx wrangler kv namespace create CACHE
+   ```
+
+   Copy the returned `id` (and optional `preview_id`) into `wrangler.toml`, replacing the `REPLACE_WITH_YOUR_KV_NAMESPACE_ID` placeholder.
+
+3. Set your GitHub token as a Pages secret (don't commit it):
+
+   ```bash
+   pnpm dlx wrangler pages secret put NUXT_GITHUB_TOKEN --project-name requests-ultravires-me
+   ```
+
+### Deploy
+
+Build and deploy in one step:
 
 ```bash
-npx nuxthub deploy
+pnpm deploy
 ```
 
-Then checkout your server cache, analaytics and more in the [NuxtHub Admin](https://admin.hub.nuxt.com).
+That runs `nuxi build` (which emits `dist/_worker.js` via Nitro's `cloudflare-pages` preset) and `wrangler pages deploy dist`.
 
-You can also deploy using [Cloudflare Pages CI](https://hub.nuxt.com/docs/getting-started/deploy#cloudflare-pages-ci).
+### Preview the production bundle locally
+
+```bash
+pnpm preview:cf
+```
+
+Equivalent to `wrangler pages dev dist`.
+
+### Continuous deployment via Cloudflare Pages
+
+Alternatively, connect the repository in the Cloudflare Pages dashboard with:
+
+- Build command: `pnpm build`
+- Build output directory: `dist`
+- Root directory: project root (default)
+- Environment variable: `NUXT_GITHUB_TOKEN`
+- KV binding: `CACHE` → the namespace created above
 
 ## Credits
 

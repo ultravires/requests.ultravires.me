@@ -9,12 +9,13 @@
     "prepare": "nuxi prepare",
     "start": "node .output/server/index.mjs",
     "start:generate": "npx serve .output/public",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "deploy": "nuxi build && wrangler pages deploy dist",
+    "preview:cf": "wrangler pages dev dist"
   },
   "dependencies": {
     "@iconify-json/ph": "^1.2.1",
     "@nuxt/ui": "^2.19.2",
-    "@nuxthub/core": "^0.7.37",
     "@vueuse/core": "^11.3.0",
     "@vueuse/nuxt": "^11.3.0",
     "feed": "^4.2.2",

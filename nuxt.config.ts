@@ -7,14 +7,29 @@ export default defineNuxtConfig({
 
   // https://nuxt.com/modules
   modules: [
-    '@nuxthub/core',
     '@nuxt/ui',
     '@vueuse/nuxt',
   ],
 
-  // https://hub.nuxt.com/docs/getting-started/installation#options
-  hub: {
-    cache: true,
+  // Deploy directly to Cloudflare Pages (replaces the sunset NuxtHub Admin flow).
+  // - `cloudflare-pages` preset emits a `dist/_worker.js` bundle deployable via `wrangler pages deploy`.
+  // - `storage.cache` mounts Cloudflare KV (binding `CACHE`, defined in `wrangler.toml`) as the
+  //   backing store for `defineCachedEventHandler` / `defineCachedFunction`.
+  // - `devStorage.cache` falls back to a local filesystem driver during `nuxi dev` so the cache works
+  //   without a real KV binding being available.
+  nitro: {
+    preset: 'cloudflare-pages',
+    storage: {
+      cache: {
+        driver: 'cloudflare-kv-binding',
+        binding: 'CACHE',
+      },
+    },
+    devStorage: {
+      cache: {
+        driver: 'memory',
+      },
+    },
   },
 
   // https://devtools.nuxt.com
